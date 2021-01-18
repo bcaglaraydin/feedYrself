@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% extends  "layout.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <div class="main-body p-0">
+            <div class="inner-wrapper">
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="media forum-item">
+                            <div class="media-body ml-3">
+                                <a href="{{ url_for("profile_page", user_id = recipe["user_id"]) }}" class="text-secondary">{{ recipe["username"] }}</a>
+
+                                <h5 class="mt-1">{{ recipe["name"] }}</h5>
+                                <div class="mt-3 font-size-sm">
+                                    <table class="table table-hover table-warning">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Instructions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td scope="row">{{ recipe["instructions"] }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <table class="table table-hover table-info">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Ingredients</th>
+                                            <th scope="col">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in ingredients %}
+                                            <tr>
+                                                <th scope="row">{{ item["food"] }}</th>
+                                                <td>{{ item["amount"] }}{{ item["unit"] }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-hover table-success">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Nutrients</th>
+
+                                            <th scope="col">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">Protein</th>
+                                            <td>{{ nutrients["protein"] }}g</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row">Fat</th>
+                                            <td>{{ nutrients["fat"] }}g</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row">Carbohydrate</th>
+                                            <td>{{ nutrients["carbs"] }}g</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row">Calorie</th>
+                                            <td>{{ nutrients["calorie"] }}kcal</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-xs text-muted has-icon"> <a href="{{ url_for("recipe_page", recipe_id=recipe_id, fav=1) }}"><i class="fa fa-star" aria-hidden="true"></i></a></button>
+                            </div>
+                            <div class="text-muted small text-center">
+                                <span class="d-none d-sm-inline-block"><i class="far fa-star"></i> {{ recipe["score"] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

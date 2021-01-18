@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% extends  "layout.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+    <div class="container h-100">
+        <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+                <div class="d-flex justify-content-center">
+                    <div class="brand_logo_container">
+                        <img src="/static/breakfast.svg" class="brand_logo" alt="Logo">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center form_container">
+                    <form action="/add_" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+
+                                <input type="text" class="form-control" name="i1" placeholder="Ingredient 1">
+                            </div>
+                            <div class="form-group col-md-4">
+
+                                <input type="number" class="form-control" name="a1" placeholder="Amount">
+                            </div>
+                            <div class="form-group col-md-3">
+
+                                <select name="sel1" class="form-control">
+                                    <option selected>Unit...</option>
+                                    <option value="g">g</option>
+                                    <option value="mL">mL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+
+                                <input type="text" class="form-control" name="i2" placeholder="Ingredient 2">
+                            </div>
+                            <div class="form-group col-md-4">
+
+                                <input type="number" class="form-control" name="a2" placeholder="Amount">
+                            </div>
+                            <div class="form-group col-md-3">
+
+                                <select name="sel2" class="form-control">
+                                    <option selected>Unit...</option>
+                                    <option value="g">g</option>
+                                    <option value="mL">mL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+
+                                <input type="text" class="form-control" name="i2" placeholder="Ingredient 3">
+                            </div>
+                            <div class="form-group col-md-4">
+
+                                <input type="number" class="form-control" name="a3" placeholder="Amount">
+                            </div>
+                            <div class="form-group col-md-3">
+
+                                <select  name="sel3" class="form-control">
+                                    <option selected>Unit...</option>
+                                    <option value="g">g</option>
+                                    <option value="mL">mL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+
+                                <input type="text" class="form-control" name="i4" placeholder="Ingredient 4">
+                            </div>
+                            <div class="form-group col-md-4">
+
+                                <input type="number" class="form-control" name="a4" placeholder="Amount">
+                            </div>
+                            <div class="form-group col-md-3">
+
+                                <select name="sel4" class="form-control">
+                                    <option selected>Unit...</option>
+                                    <option value="g">g</option>
+                                    <option value="mL">mL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+
+                                <input type="text" class="form-control" name="i5" placeholder="Ingredient 5">
+                            </div>
+                            <div class="form-group col-md-4">
+
+                                <input type="number" class="form-control"  name="a5" placeholder="Amount">
+                            </div>
+                            <div class="form-group col-md-3">
+
+                                <select name="sel5" class="form-control">
+                                    <option selected>Unit...</option>
+                                    <option value="g">g</option>
+                                    <option value="mL">mL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

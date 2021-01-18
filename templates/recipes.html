@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% extends  "layout.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <div class="main-body p-0">
+            <div class="inner-wrapper">
+                <div class="inner-sidebar">
+                    <div class="inner-sidebar-body p-0">
+                        <div class="p-3 h-100" data-simplebar="init">
+                            <div class="simplebar-wrapper" style="margin: -16px;">
+                                <div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div>
+                                <div class="simplebar-mask">
+                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                        <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
+                                            <div class="simplebar-content" style="padding: 16px;">
+                                                <nav class="nav nav-pills nav-gap-y-1 flex-column">
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="all", user_id=user_id) }}" class="nav-link nav-link-faded has-icon active">All Recipes</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="diet",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">My Diet</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Breakfast",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Breakfast</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Lunch",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Lunch</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Beverages",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Beverages</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Appetizers",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Appetizers</a>
+                                                    <a href="{{ url_for('recipes_page', public=public,cat="Soups",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Soups</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Salads",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Salads</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Seafood",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Seafood</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Vegetarian",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Vegetarian</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Vegetables",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Vegetables</a>
+                                                    <a href="{{ url_for('recipes_page', public=public, cat="Desserts",user_id=user_id) }}" class="nav-link nav-link-faded has-icon">Desserts</a>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="simplebar-placeholder" style="width: 234px; height: 292px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="inner-main">
+                    <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                        {% for item in result %}
+                            <div class="card mb-2">
+                                <div class="card-body p-2 p-sm-3">
+                                    <div class="media forum-item">
+
+                                        <div class="media-body">
+                                            <h6><a href="{{ url_for("recipe_page", recipe_id = item["recipe_id"], fav=0) }}" class="text-body">{{ item["name"] }}</a></h6>
+                                            <p class="text-muted"> <span class="text-secondary font-weight-bold">from</span> <a href="{{ url_for("profile_page", user_id = item["user_id"]) }}">{{ item["username"] }}</a> </p>
+                                        </div>
+                                        <div class="text-muted small text-center align-self-center">
+                                            <span class="d-none d-sm-inline-block"><i class="far fa-star"></i> {{ item["score"] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

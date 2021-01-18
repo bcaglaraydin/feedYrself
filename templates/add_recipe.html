@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% extends  "layout.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+   <div class="container h-100">
+        <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+                <div class="d-flex justify-content-center">
+                    <div class="brand_logo_container">
+                        <img src="/static/breakfast.svg" class="brand_logo" alt="Logo">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center form_container">
+                    <form action="/add_inst" method="post">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <input type="text" name="rec_name" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="form-group col-md-6">
+
+                          <select name="cat" class="form-control">
+                            <option selected>Category...</option>
+                              <option value="Breakfast">Breakfast</option>
+                              <option value="Lunch">Lunch</option>
+                              <option value="Beverages">Beverages</option>
+                              <option value="Appetizers">Appetizers</option>
+                              <option value="Soups">Soups</option>
+                              <option value="Salads">Salads</option>
+                              <option value="Seafood">Seafood</option>
+                              <option value="Vegetarian">Vegetarian</option>
+                              <option value="Vegetables">Vegetables</option>
+                              <option value="Desserts">Desserts</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <textarea class="form-control" rows="4" name="inst" placeholder="Instructions"></textarea>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="check" id="gridCheck">
+                          <label class="form-check-label" for="gridCheck">
+                            Share It!
+                          </label>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
