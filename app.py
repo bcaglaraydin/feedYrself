@@ -14,8 +14,8 @@ app.add_url_rule("/sign_up", view_func=view.sign_up_page)
 
 app.config['MYSQL_HOST'] = "eu-cdbr-west-03.cleardb.net"
 app.config['MYSQL_USER'] = "b7bc219a8e3513"
-app.config['MYSQL_PASSWORD'] = "3729114"
-app.config['MYSQL_DB'] = "rec_db"
+app.config['MYSQL_PASSWORD'] = "3729114a"
+app.config['MYSQL_DB'] = "heroku_bae7948a328621b"
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 db = MySQL(app)
 api_key = 'H8yr4KlLftBQAa1NhtUY14pgLsydbMCFq3VCXN1R'
