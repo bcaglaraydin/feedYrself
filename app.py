@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, flash, session, url_for,g
+from flask import Flask, render_template, request, redirect, flash, session, url_for
+from passlib.hash import pbkdf2_sha256 as hasher
 from datetime import timedelta
 import view
 from flask_mysqldb import MySQL
@@ -30,11 +31,12 @@ def sign_up_suc_page():
         user = request.form.get('usrname')
         name = request.form.get('nm')
         pas = request.form.get('pass')
+        hashed_pass = hasher.hash(pas)
         gender = request.form.get('g')
         age = request.form.get('a')
         cursor = db.connection.cursor()
         query = "INSERT INTO user VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (None, name, age, gender, user, pas, 0, None))
+        cursor.execute(query, (None, name, age, gender, user, hashed_pass, 0, None))
         db.connection.commit()
         cursor.close()
         return render_template('sign_up.html', sign=1)
@@ -47,12 +49,12 @@ def logic_suc_page():
         pas = request.form.get('pass')
         r = request.form.get('remember')
         cursor = db.connection.cursor()
-        query = "SELECT * FROM user WHERE username = %s AND password = %s"
-        cursor.execute(query, (user, pas))
-        ex = cursor.fetchone()
-        db.connection.commit()
+        # query = "SELECT password FROM user WHERE username = %s"
+        cursor.execute("SELECT password FROM user WHERE username = %s", [user])
+        p = cursor.fetchone()
+        password = p['password']
         cursor.close()
-        if not ex:
+        if not hasher.verify(pas, password):
             return render_template('login.html', success=0)
         else:
             session["user"] = user
@@ -198,7 +200,6 @@ def add_ingre_page():
 
 @app.route("/recipes/<int:public>/<string:cat>/<int:user_id>", methods=['GET', 'POST'])
 def recipes_page(public=None, cat=None, user_id=None):
-    cursor = db.connection.cursor()
     user = session['user']
     cursor = db.connection.cursor()
     cursor.execute("SELECT user_id FROM user WHERE username = %s", [user])
@@ -209,34 +210,39 @@ def recipes_page(public=None, cat=None, user_id=None):
             if cat == "all":
                 cursor.execute("SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE  r.user_id = %s and r.user_id = u.user_id", [user_id])
             elif cat == "diet":
-                cursor.execute("SELECT * FROM nutrient WHERE id IN (SELECT diet_id FROM user WHERE user_id = %s)", [id])
-                nuts = cursor.fetchone()
+                cursor.execute("SELECT diet_id FROM user WHERE user_id = %s", [id])
+                diet = cursor.fetchone()
+                if diet['diet_id']:
+                    cursor.execute("SELECT * FROM nutrient WHERE id IN (SELECT diet_id FROM user WHERE user_id = %s)", [id])
+                    nuts = cursor.fetchone()
 
-                if nuts['protein']:
-                    p = nuts['protein']
+                    if nuts['protein']:
+                        p = nuts['protein']
+                    else:
+                        p = 0
+
+                    if nuts['fat']:
+                        f = nuts['fat']
+                    else:
+                        f = 100000
+
+                    if nuts['carbs']:
+                        c = nuts['carbs']
+                    else:
+                        c = 100000
+
+                    if nuts['calorie']:
+                        cal = nuts['calorie']
+                    else:
+                        cal = 100000
+
+                    query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score " \
+                            "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.user_id = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
+                            "INNER JOIN user u ON u.user_id = r.user_id"
+                    values = (user_id, p, f, c, cal)
+                    cursor.execute(query, values)
                 else:
-                    p = 0
-
-                if nuts['fat']:
-                    f = nuts['fat']
-                else:
-                    f = 100000
-
-                if nuts['carbs']:
-                    c = nuts['carbs']
-                else:
-                    c = 100000
-
-                if nuts['calorie']:
-                    cal = nuts['calorie']
-                else:
-                    cal = 100000
-
-                query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score " \
-                        "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.user_id = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
-                        "INNER JOIN user u ON u.user_id = r.user_id"
-                values = (user_id, p, f, c, cal)
-                cursor.execute(query, values)
+                    return redirect(url_for('add_diet_page'))
             else:
                 query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.user_id = %s and r.category = %s and r.user_id = u.user_id"
                 values = (user_id, cat)
@@ -247,6 +253,51 @@ def recipes_page(public=None, cat=None, user_id=None):
                 values = (public, user_id)
                 cursor.execute(query, values)
             elif cat == "diet":
+                cursor.execute("SELECT diet_id FROM user WHERE user_id = %s", [id])
+                diet = cursor.fetchone()
+                if diet['diet_id']:
+                    cursor.execute("SELECT * FROM nutrient WHERE id IN (SELECT diet_id FROM user WHERE user_id = %s)", [id])
+                    nuts = cursor.fetchone()
+
+                    if nuts['protein']:
+                        p = nuts['protein']
+                    else:
+                        p = 0
+
+                    if nuts['fat']:
+                        f = nuts['fat']
+                    else:
+                        f = 100000
+
+                    if nuts['carbs']:
+                        c = nuts['carbs']
+                    else:
+                        c = 100000
+
+                    if nuts['calorie']:
+                        cal = nuts['calorie']
+                    else:
+                        cal = 100000
+
+                    query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score " \
+                            "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.user_id = %s AND r.is_public = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
+                            "INNER JOIN user u ON u.user_id = r.user_id"
+                    values = (user_id, public, p, f, c, cal)
+                    cursor.execute(query, values)
+                else:
+                    return redirect(url_for('add_diet_page'))
+
+            else:
+                query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.is_public = %s and r.user_id = %s and r.category = %s and r.user_id = u.user_id"
+                values = (public, user_id, cat)
+                cursor.execute(query, values)
+    else:
+        if cat == "all":
+            cursor.execute("SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.is_public = %s and r.user_id = u.user_id", [public])
+        elif cat == "diet":
+            cursor.execute("SELECT diet_id FROM user WHERE user_id = %s", [id])
+            diet = cursor.fetchone()
+            if diet['diet_id']:
                 cursor.execute("SELECT * FROM nutrient WHERE id IN (SELECT diet_id FROM user WHERE user_id = %s)", [id])
                 nuts = cursor.fetchone()
 
@@ -271,47 +322,12 @@ def recipes_page(public=None, cat=None, user_id=None):
                     cal = 100000
 
                 query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score " \
-                        "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.user_id = %s AND r.is_public = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
+                        "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.is_public = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
                         "INNER JOIN user u ON u.user_id = r.user_id"
-                values = (user_id, public, p, f, c, cal)
+                values = (public, p, f, c, cal)
                 cursor.execute(query, values)
-
             else:
-                query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.is_public = %s and r.user_id = %s and r.category = %s and r.user_id = u.user_id"
-                values = (public, user_id, cat)
-                cursor.execute(query, values)
-    else:
-        if cat == "all":
-            cursor.execute("SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.is_public = %s and r.user_id = u.user_id", [public])
-        elif cat == "diet":
-            cursor.execute("SELECT * FROM nutrient WHERE id IN (SELECT diet_id FROM user WHERE user_id = %s)", [id])
-            nuts = cursor.fetchone()
-
-            if nuts['protein']:
-                p = nuts['protein']
-            else:
-                p = 0
-
-            if nuts['fat']:
-                f = nuts['fat']
-            else:
-                f = 100000
-
-            if nuts['carbs']:
-                c = nuts['carbs']
-            else:
-                c = 100000
-
-            if nuts['calorie']:
-                cal = nuts['calorie']
-            else:
-                cal = 100000
-
-            query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score " \
-                    "FROM recipe r INNER JOIN nutrient n ON r.nutrient_id = n.id AND r.is_public = %s AND n.protein > %s AND n.fat < %s AND n.carbs < %s AND n.calorie < %s " \
-                    "INNER JOIN user u ON u.user_id = r.user_id"
-            values = (public, p, f, c, cal)
-            cursor.execute(query, values)
+                return redirect(url_for('add_diet_page'))
         else:
             query = "SELECT u.user_id, r.recipe_id, r.name, u.username, r.score FROM recipe r INNER JOIN user u WHERE r.is_public = %s and r.user_id = u.user_id and r.category = %s"
             values = (public, cat)
