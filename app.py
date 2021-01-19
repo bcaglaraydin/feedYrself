@@ -12,16 +12,16 @@ app.add_url_rule("/login", view_func=view.login_page)
 app.add_url_rule("/sign_up", view_func=view.sign_up_page)
 
 
-app.config['MYSQL_HOST'] = "localhost"
-app.config['MYSQL_USER'] = "root"
-app.config['MYSQL_PASSWORD'] = "geysha1407"
+app.config['MYSQL_HOST'] = "eu-cdbr-west-03.cleardb.net"
+app.config['MYSQL_USER'] = "b7bc219a8e3513"
+app.config['MYSQL_PASSWORD'] = "3729114"
 app.config['MYSQL_DB'] = "rec_db"
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 db = MySQL(app)
 api_key = 'H8yr4KlLftBQAa1NhtUY14pgLsydbMCFq3VCXN1R'
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run()
 
 
 @app.route("/sign_up_suc", methods=['POST'])
